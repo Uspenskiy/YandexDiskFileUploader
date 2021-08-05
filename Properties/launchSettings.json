@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "YandexDiskFileUploader": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\User\\Pictures Pictures"
+    }
+  }
+}
