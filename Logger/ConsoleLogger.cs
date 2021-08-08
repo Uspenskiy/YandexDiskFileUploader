@@ -34,6 +34,7 @@ namespace YandexDiskFileUploader.Logger
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write(value);
                 Console.ForegroundColor = color;
+                Console.SetCursorPosition(0, _id);
             }
         }
     }

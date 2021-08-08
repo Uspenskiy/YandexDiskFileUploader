@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using YandexDiskFileUploader.Extensions;
 
@@ -12,10 +13,13 @@ namespace YandexDiskFileUploader
 {
     class Program
     {
+        private static CancellationTokenSource _cancellationTokenSource;
         static async Task Main(string[] args)
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+            Console.CancelKeyPress += (sender, e) => _cancellationTokenSource.Cancel();
             using IHost host = CreateHostBuilder(args).Build();
-            await host.RunAsync();
+            await host.RunAsync(_cancellationTokenSource.Token);
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)

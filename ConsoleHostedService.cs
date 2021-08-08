@@ -21,7 +21,6 @@ namespace YandexDiskFileUploader
         private readonly ILogger _logger;
         private readonly IHostApplicationLifetime _appLifetime;
         private readonly IConfiguration _configuration;
-        private readonly CancellationTokenSource _token;
 
         public ConsoleHostedService(ILogger<ConsoleHostedService> logger, 
             IHostApplicationLifetime appLifetime, 
@@ -30,7 +29,6 @@ namespace YandexDiskFileUploader
             _logger = logger;
             _appLifetime = appLifetime;
             _configuration = configuration;
-            _token = new CancellationTokenSource();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -57,7 +55,7 @@ namespace YandexDiskFileUploader
                 return;
             }
 
-            var options = new ParallelOptions {CancellationToken = _token.Token};
+            var options = new ParallelOptions {CancellationToken = cancellationToken};
             var fileUpload = new YandexFileUpload(new Uri(_configuration["BaseAddress"]), _configuration["Token"], destination);
             var files = Directory.GetFiles(source)
                 .Select(f => new KeyValuePair<string,IRequest>(f, fileUpload.GetRequest(f)));
@@ -76,7 +74,6 @@ namespace YandexDiskFileUploader
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {   
-            _token.Cancel();
             _appLifetime.StopApplication();
         }
     }
